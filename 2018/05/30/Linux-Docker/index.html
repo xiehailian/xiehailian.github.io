@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>Docker | PrintXHL | 我就想做一点微小的工作</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#2361b6">
+    
+    
+    <meta name="keywords" content="Linux">
+    <meta name="description" content="Doker 安装、卸载、加速 安装docker 1yum -y install docker  启动docker后台服务 1service docker start  列出安装过的包 1yum list installed | grep docker  卸载安装包 1yum -y remove docker-engine.x86_64  删除镜像/容器 1rm -rf /var/lib/docke">
+<meta name="keywords" content="Linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker">
+<meta property="og:url" content="http://printxhl.com/2018/05/30/Linux-Docker/index.html">
+<meta property="og:site_name" content="PrintXHL">
+<meta property="og:description" content="Doker 安装、卸载、加速 安装docker 1yum -y install docker  启动docker后台服务 1service docker start  列出安装过的包 1yum list installed | grep docker  卸载安装包 1yum -y remove docker-engine.x86_64  删除镜像/容器 1rm -rf /var/lib/docke">
+<meta property="og:updated_time" content="2018-04-02T03:41:31.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Docker">
+<meta name="twitter:description" content="Doker 安装、卸载、加速 安装docker 1yum -y install docker  启动docker后台服务 1service docker start  列出安装过的包 1yum list installed | grep docker  卸载安装包 1yum -y remove docker-engine.x86_64  删除镜像/容器 1rm -rf /var/lib/docke">
+    
+        <link rel="alternate" type="application/atom+xml" title="PrintXHL" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.6.13">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">谢海练</h5>
+          <a href="mailto:xiehailian66@126.com" title="xiehailian66@126.com" class="mail">xiehailian66@126.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                Home
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/python"  >
+                <i class="icon icon-lg icon-code"></i>
+                Python
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/data"  >
+                <i class="icon icon-lg icon-database"></i>
+                Data
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/book"  >
+                <i class="icon icon-lg icon-book"></i>
+                Book
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/xiehailian" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Docker</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Docker</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-05-30T06:55:02.401Z" itemprop="datePublished" class="page-time">
+  2018-05-30
+</time>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Doker-安装、卸载、加速"><span class="post-toc-number">1.</span> <span class="post-toc-text">Doker 安装、卸载、加速</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Docker基本命令"><span class="post-toc-number">2.</span> <span class="post-toc-text">Docker基本命令</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Docker容器使用"><span class="post-toc-number">3.</span> <span class="post-toc-text">Docker容器使用</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Docker镜像使用"><span class="post-toc-number">4.</span> <span class="post-toc-text">Docker镜像使用</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Docker容器连接"><span class="post-toc-number">5.</span> <span class="post-toc-text">Docker容器连接</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#文件传输"><span class="post-toc-number">6.</span> <span class="post-toc-text">文件传输</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Docker-安装jupyter"><span class="post-toc-number">7.</span> <span class="post-toc-text">Docker 安装jupyter</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Docker-Hub使用"><span class="post-toc-number">8.</span> <span class="post-toc-text">Docker Hub使用</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-Linux-Docker"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Docker</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-05-30 14:55:02" datetime="2018-05-30T06:55:02.401Z"  itemprop="datePublished">2018-05-30</time>
+
+            
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h3 id="Doker-安装、卸载、加速"><a href="#Doker-安装、卸载、加速" class="headerlink" title="Doker 安装、卸载、加速"></a>Doker 安装、卸载、加速</h3><ul>
+<li><p>安装docker</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum -y install docker</div></pre></td></tr></table></figure>
+</li>
+<li><p>启动docker后台服务</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">service docker start</div></pre></td></tr></table></figure>
+</li>
+<li><p>列出安装过的包</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum list installed | grep docker</div></pre></td></tr></table></figure>
+</li>
+<li><p>卸载安装包</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum -y remove docker-engine.x86_64</div></pre></td></tr></table></figure>
+</li>
+<li><p>删除镜像/容器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rm -rf /var/lib/docker</div></pre></td></tr></table></figure>
+</li>
+<li><p>删除某个容器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">docker stop 4aaa117cc44d</div><div class="line">docker rm 4aaa117cc44d</div></pre></td></tr></table></figure>
+</li>
+<li><p>删除某个镜像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker rmi dongweiming/web_develop</div></pre></td></tr></table></figure>
+</li>
+<li><p>Docker加速</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">sudo mkdir -p /etc/docker</div><div class="line">sudo tee /etc/docker/daemon.json &lt;&lt;-&apos;EOF&apos;</div><div class="line">&#123;</div><div class="line">  &quot;registry-mirrors&quot;: [&quot;https://xyv3tri5.mirror.aliyuncs.com&quot;]</div><div class="line">&#125;</div><div class="line">EOF</div><div class="line">sudo systemctl daemon-reload</div><div class="line">sudo systemctl restart docker</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="Docker基本命令"><a href="#Docker基本命令" class="headerlink" title="Docker基本命令"></a>Docker基本命令</h3><ul>
+<li><p>拉取docker镜像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker pull dongweiming/web_develop:lastest</div></pre></td></tr></table></figure>
+</li>
+<li><p>显示docker镜像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker images</div></pre></td></tr></table></figure>
+</li>
+<li><p>进入容器</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run --name web_dev -it -p 9000:9000 -p 3141:3141 -p 5000:5000 dongweiming/web_develop /bin/zsh</div></pre></td></tr></table></figure>
+<ul>
+<li><code>-i</code>：在新容器里指定一个伪终端</li>
+<li><code>-t</code>：允许你对容器内的标准输入进行交互</li>
+<li><code>-d</code>：以进程方式后台运行容器</li>
+<li><code>-p</code>：显示暴露特定端口</li>
+</ul>
+</li>
+<li><p>后台运行容器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run -dit -p 9000:9000 -p 3141:3141 -p 5000:5000 dongweiming/web_develop /bin/zsh</div></pre></td></tr></table></figure>
+</li>
+<li><p>显示后台运行的容器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker ps -a</div></pre></td></tr></table></figure>
+</li>
+<li><p>调用后台容器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker attach 4aaa117cc44d</div></pre></td></tr></table></figure>
+<blockquote>
+<p>退出时，使用<code>[ctrl + D]</code>，这样会结束docker当前线程，容器结束，可以使用<code>[ctrl + P][ctrl + Q]</code>退出而不终止容器运行</p>
+</blockquote>
+</li>
+<li><p>停止容器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker stop 4aaa117cc44d</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="Docker容器使用"><a href="#Docker容器使用" class="headerlink" title="Docker容器使用"></a>Docker容器使用</h3><ul>
+<li><p>后台运行容器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run -dit -P dongweiming/web_develop</div></pre></td></tr></table></figure>
+</li>
+<li><p>进入容器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker attach 4aaa117cc</div></pre></td></tr></table></figure>
+</li>
+<li><p>后台运行容器内的程序</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">nohup python chapter3/section1/hello.py &amp;</div></pre></td></tr></table></figure>
+</li>
+<li><p>查看端口映射，使用浏览器访问<code>http://120.77.217.212:32772/</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker ps -a</div></pre></td></tr></table></figure>
+</li>
+<li><p>查看端口映射情况</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker port 30ef932cc51f</div></pre></td></tr></table></figure>
+</li>
+<li><p>查看容器内应用程序日志</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker logs -f 30ef932cc51f</div></pre></td></tr></table></figure>
+</li>
+<li><p>检查应用程序的状态信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker inspect 30ef932cc51f</div></pre></td></tr></table></figure>
+</li>
+<li><p>停止容器内应用程序</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker stop 30ef932cc51f</div></pre></td></tr></table></figure>
+</li>
+<li><p>启动应用容器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker start 30ef932cc51f</div></pre></td></tr></table></figure>
+</li>
+<li><p>移除应用容器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker rm 30ef932cc51f</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="Docker镜像使用"><a href="#Docker镜像使用" class="headerlink" title="Docker镜像使用"></a>Docker镜像使用</h3><ul>
+<li><p>查找镜像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker search redis</div></pre></td></tr></table></figure>
+</li>
+<li><p>从已经创建的容器中更新镜像，并且提交这个镜像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker commit -m=&quot;has update&quot; -a=&quot;runoob&quot; e218edb10161 runoob/ubuntu:v2</div></pre></td></tr></table></figure>
+</li>
+<li><p>使用<code>Dockerfile</code>指令来创建一个新的镜像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker build -t runoob/centos:6.7 .</div></pre></td></tr></table></figure>
+</li>
+<li><p>设置标签镜像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker tag 860c279d2fec runoob/centos:dev</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="Docker容器连接"><a href="#Docker容器连接" class="headerlink" title="Docker容器连接"></a>Docker容器连接</h3><ul>
+<li><p>网络端口映射</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">docker run -d -P training/webapp</div><div class="line">docker run -d -p 5000:5000 training/webapp</div></pre></td></tr></table></figure>
+<ul>
+<li><code>-P</code>：容器内部端口随机映射到主机的高端口</li>
+<li><code>-p</code>：容器内部端口绑定到主机端口</li>
+</ul>
+</li>
+<li><p>容器命名</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run -d -P --name runoob training/webapp</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="文件传输"><a href="#文件传输" class="headerlink" title="文件传输"></a>文件传输</h3><ul>
+<li><p>获取ID全称</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker inspect -f &apos;&#123;&#123;.id&#125;&#125;&apos; 30ef932cc51f</div></pre></td></tr></table></figure>
+</li>
+<li><p>文件传输</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker cp 本地文件路径 ID全称:容器路径</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="Docker-安装jupyter"><a href="#Docker-安装jupyter" class="headerlink" title="Docker 安装jupyter"></a>Docker 安装jupyter</h3><p><a href="https://segmentfault.com/a/1190000007448177" target="_blank" rel="external">https://segmentfault.com/a/1190000007448177</a></p>
+<h3 id="Docker-Hub使用"><a href="#Docker-Hub使用" class="headerlink" title="Docker Hub使用"></a>Docker Hub使用</h3><p><a href="http://wiki.jikexueyuan.com/project/docker/userguide/dockerrepos.html" target="_blank" rel="external">http://wiki.jikexueyuan.com/project/docker/userguide/dockerrepos.html</a></p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    Last updated: <time datetime="2018-04-02T03:41:31.000Z" itemprop="dateUpdated">2018-04-02 11:41:31</time>
+</span><br>
+
+
+        
+    </div>
+    <footer>
+        <a href="http://printxhl.com">
+            <img src="/img/avatar.jpg" alt="谢海练">
+            谢海练
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li></ul>
+
+
+            
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/05/30/Linux-Base/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Linux 基本操作</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/05/30/Linux-HexoBlog/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Hexo Blog</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <!-- <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>footer.license</span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>谢海练 &copy; 2017 - 2018</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer> -->
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: false, REWARD: false };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.6.13"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.6.13" async></script>
+
+
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+
+
+
+
+
+
+
+
+</body>
+</html>
