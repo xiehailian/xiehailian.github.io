@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>Profiling Go Programs | PrintXHL | 我就想做一点微小的工作</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#2361b6">
+    
+    
+    <meta name="keywords" content="Go">
+    <meta name="description" content="pprof是Go语言自带的性能检查工具。通过这个工具可以定位Go语言程序中存在的性能问题，进而优化性能。 环境准备 golang go-wrk，并发测试工具123456go get -v github.com/tsliwowicz/go-wrk# go-wrk需要依赖golang.org/x/net, 国内下载很慢$ mkdir -p $GOPATH/src/golang.org/x$ cd $G">
+<meta name="keywords" content="Go">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Profiling Go Programs">
+<meta property="og:url" content="http://printxhl.com/2019/05/16/Go-PProf/index.html">
+<meta property="og:site_name" content="PrintXHL">
+<meta property="og:description" content="pprof是Go语言自带的性能检查工具。通过这个工具可以定位Go语言程序中存在的性能问题，进而优化性能。 环境准备 golang go-wrk，并发测试工具123456go get -v github.com/tsliwowicz/go-wrk# go-wrk需要依赖golang.org/x/net, 国内下载很慢$ mkdir -p $GOPATH/src/golang.org/x$ cd $G">
+<meta property="og:updated_time" content="2019-05-16T10:36:23.172Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Profiling Go Programs">
+<meta name="twitter:description" content="pprof是Go语言自带的性能检查工具。通过这个工具可以定位Go语言程序中存在的性能问题，进而优化性能。 环境准备 golang go-wrk，并发测试工具123456go get -v github.com/tsliwowicz/go-wrk# go-wrk需要依赖golang.org/x/net, 国内下载很慢$ mkdir -p $GOPATH/src/golang.org/x$ cd $G">
+    
+        <link rel="alternate" type="application/atom+xml" title="PrintXHL" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.6.13">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">谢海练</h5>
+          <a href="mailto:xiehailian66@126.com" title="xiehailian66@126.com" class="mail">xiehailian66@126.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                Home
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/python"  >
+                <i class="icon icon-lg icon-code"></i>
+                Python
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/data"  >
+                <i class="icon icon-lg icon-database"></i>
+                Data
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/book"  >
+                <i class="icon icon-lg icon-book"></i>
+                Book
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/xiehailian" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Profiling Go Programs</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Profiling Go Programs</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-05-16T02:55:11.125Z" itemprop="datePublished" class="page-time">
+  2019-05-16
+</time>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#环境准备"><span class="post-toc-number">1.</span> <span class="post-toc-text">环境准备</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#利用PProf优化程序性能"><span class="post-toc-number">2.</span> <span class="post-toc-text">利用PProf优化程序性能</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#通过WEB界面分析"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">通过WEB界面分析</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#通过命令行分析"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">通过命令行分析</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#通过可视化界面分析"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">通过可视化界面分析</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#由浅入深的性能分析过程"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">由浅入深的性能分析过程</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#利用PProf排查程序问题"><span class="post-toc-number">3.</span> <span class="post-toc-text">利用PProf排查程序问题</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#协程泄漏"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">协程泄漏</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#内存泄漏"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">内存泄漏</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-Go-PProf"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Profiling Go Programs</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-05-16 10:55:11" datetime="2019-05-16T02:55:11.125Z"  itemprop="datePublished">2019-05-16</time>
+
+            
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p><code>pprof</code>是Go语言自带的性能检查工具。通过这个工具可以定位Go语言程序中存在的性能问题，进而优化性能。</p>
+<h3 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h3><ul>
+<li><a href="https://studygolang.com/dl/golang/go1.12.5.src.tar.gz" target="_blank" rel="external">golang</a></li>
+<li><a href="https://github.com/tsliwowicz/go-wrk" target="_blank" rel="external">go-wrk</a>，并发测试工具<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">go get -v github.com/tsliwowicz/go-wrk</div><div class="line"></div><div class="line"><span class="comment"># go-wrk需要依赖golang.org/x/net, 国内下载很慢</span></div><div class="line">$ mkdir -p <span class="variable">$GOPATH</span>/src/golang.org/x</div><div class="line">$ <span class="built_in">cd</span> <span class="variable">$GOPATH</span>/src/golang.org/x</div><div class="line">$ git <span class="built_in">clone</span> https://github.com/golang/net.git</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><a href="https://gitlab.com/graphviz/graphviz" target="_blank" rel="external">graphviz</a>，图形化工具<br><code>yum install graphviz</code></li>
+</ul>
+<h3 id="利用PProf优化程序性能"><a href="#利用PProf优化程序性能" class="headerlink" title="利用PProf优化程序性能"></a>利用PProf优化程序性能</h3><p>对代码进行性能分析时，需要导入pprof包：</p>
+<ul>
+<li><code>runtime/pprof</code>: 采集程序(非HTTP Server)的运行数据进行分析</li>
+<li><code>net/http/pprof</code>: 采集HTTP Server的运行数据进行分析<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> (</div><div class="line">    <span class="string">"net/http"</span></div><div class="line">    _ <span class="string">"net/http/pprof"</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">test</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">var</span> s  []<span class="keyword">int</span></div><div class="line">    <span class="keyword">for</span> i:=<span class="number">0</span>; i&lt; <span class="number">10000</span>; i++ &#123;</div><div class="line">        s = <span class="built_in">append</span>(s, i)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">go</span> test()</div><div class="line">    http.ListenAndServe(<span class="string">"localhost:8080"</span>, <span class="literal">nil</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>在进行分析时，有如下几种模式：</p>
+<h4 id="通过WEB界面分析"><a href="#通过WEB界面分析" class="headerlink" title="通过WEB界面分析"></a>通过WEB界面分析</h4><p>访问<a href="http://192.168.56.2:9090/debug/pprof/" target="_blank" rel="external">http://192.168.56.2:9090/debug/pprof/</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">Types of profiles available:</div><div class="line">Count	Profile</div><div class="line">34	allocs: 查看过去所有的内存分配情况</div><div class="line">0	block: 查看导致阻塞同步的堆栈跟踪</div><div class="line">0	cmdline: 当前程序的调用命令行</div><div class="line">4	goroutine: 查看当前所有运行的 goroutines 堆栈跟踪</div><div class="line">34	heap: 查看活动对象的内存分配情况</div><div class="line">0	mutex: 查看导致互斥锁的竞争持有者的堆栈跟踪</div><div class="line">0	profile: 默认进行 30s 的 CPU Profiling，得到一个分析用的 profile 文件</div><div class="line">10	threadcreate: 查看创建新OS线程的堆栈跟踪</div><div class="line">0	trace: 当前程序的执行路径，可以使用`go tool trace`进行分析</div></pre></td></tr></table></figure></p>
+<h4 id="通过命令行分析"><a href="#通过命令行分析" class="headerlink" title="通过命令行分析"></a>通过命令行分析</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">$ go tool pprof http://localhost:9090/debug/pprof/profile</div><div class="line"></div><div class="line">File: main</div><div class="line">Type: cpu</div><div class="line">Time: May 16, 2019 at 3:08pm (CST)</div><div class="line">Duration: 5.18s, Total samples = 3.28s (63.31%)</div><div class="line">Entering interactive mode (<span class="built_in">type</span> <span class="string">"help"</span> <span class="keyword">for</span> commands, <span class="string">"o"</span> <span class="keyword">for</span> options)</div><div class="line">(pprof) top</div><div class="line">Showing nodes accounting <span class="keyword">for</span> 1620ms, 49.39% of 3280ms total</div><div class="line">Dropped 118 nodes (cum &lt;= 16.40ms)</div><div class="line">Showing top 10 nodes out of 160</div><div class="line">    flat  flat%   sum%        cum   cum%</div><div class="line">    1100ms 33.54% 33.54%     1130ms 34.45%  syscall.Syscall</div><div class="line">    80ms  2.44% 35.98%      120ms  3.66%  runtime.deferreturn</div><div class="line">    70ms  2.13% 38.11%       70ms  2.13%  runtime.epollwait</div><div class="line">    60ms  1.83% 39.94%       60ms  1.83%  net/http.(*exactSig).match</div><div class="line">    60ms  1.83% 41.77%       60ms  1.83%  runtime.futex</div><div class="line">    60ms  1.83% 43.60%       80ms  2.44%  runtime.mapaccess1_faststr</div></pre></td></tr></table></figure>
+<ul>
+<li>flat: 对应函数的运行耗时</li>
+<li>flat%: 对应函数在CPU运行耗时比列</li>
+<li>sum%: 对应函数累计使用CPU的总比例</li>
+<li>cum: 对应函数加上它的调用的总耗时</li>
+<li>cum%: 对应函数加上它的调用的耗时比例</li>
+</ul>
+<h4 id="通过可视化界面分析"><a href="#通过可视化界面分析" class="headerlink" title="通过可视化界面分析"></a>通过可视化界面分析</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">go tool pprof -http=&quot;192.168.56.2:8080&quot; --seconds 5  http://localhost:9090/debug/pprof/profile</div></pre></td></tr></table></figure>
+<h4 id="由浅入深的性能分析过程"><a href="#由浅入深的性能分析过程" class="headerlink" title="由浅入深的性能分析过程"></a>由浅入深的性能分析过程</h4><p>以<a href="https://www.youtube.com/watch?v=N3PWzBeLX2M&amp;list=LLvH-YHAzDhKXWt9nLAXC6cA&amp;index=6&amp;t=2239s" target="_blank" rel="external">Profiling and Optimizing Go</a>的性能优化为例子，来介绍pprof性能优化的过程</p>
+<ol>
+<li>默认的pprof页面概览<br> <a href="http://192.168.56.2:9090/debug/pprof/" target="_blank" rel="external">http://192.168.56.2:9090/debug/pprof/</a></li>
+<li><p>分析火焰图，定位接口涉及的耗时函数</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ go tool pprof -http=&quot;192.168.56.2:8080&quot; --seconds 5  http://localhost:9090/debug/pprof/profile</div></pre></td></tr></table></figure>
+</li>
+<li><p>查看函数内部的耗时情况</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ go tool pprof http://localhost:9090/debug/pprof/profile</div></pre></td></tr></table></figure>
+<ul>
+<li>list regex: 查看regex函数内部的耗时</li>
+<li>disasm regex: 查看regex函数对应的汇编码耗时</li>
+</ul>
+</li>
+<li><p>通过基准测试，生成测试报告，获得更详细的性能分析情况</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ go test -bench . -benchmem -cpuprofile prof.cpu -memprofile prof.mem</div><div class="line">$ go tool pprof stats.test prof.cpu</div><div class="line">$ go tool pprof -alloc_objects stats.test prof.mem</div></pre></td></tr></table></figure>
+</li>
+<li><p>在编译过程进行逃逸分析，尽量避免在堆上分配空间，减少垃圾回收的时间</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ go build -gcflags=-m .</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="利用PProf排查程序问题"><a href="#利用PProf排查程序问题" class="headerlink" title="利用PProf排查程序问题"></a>利用PProf排查程序问题</h3><p>不健壮的程序，比如启动了大量的goroutine没有退出，又或是不使用的对象仍存在于内存中，这些问题都可以通过PProf来快速定位问题</p>
+<h4 id="协程泄漏"><a href="#协程泄漏" class="headerlink" title="协程泄漏"></a>协程泄漏</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">import (</div><div class="line">	&quot;fmt&quot;</div><div class="line">	&quot;net/http&quot;</div><div class="line">	_ &quot;net/http/pprof&quot;</div><div class="line">	&quot;time&quot;</div><div class="line">)</div><div class="line"></div><div class="line">func test(i time.Time) &#123;</div><div class="line">	fmt.Println(i)</div><div class="line">	for &#123;</div><div class="line">		select &#123;&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">func main() &#123;</div><div class="line">	go http.ListenAndServe(&quot;localhost:8080&quot;, nil)</div><div class="line">	c := time.Tick(1 * time.Second)</div><div class="line">	for range c &#123;</div><div class="line">		go test(&lt;-c)</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>访问：<a href="http://localhost:8080/debug/pprof/goroutine" target="_blank" rel="external">http://localhost:8080/debug/pprof/goroutine</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">goroutine profile: total 88</div><div class="line">83 @ 0x430690 0x43f480 0x6ef801 0x45c3c1</div><div class="line">#	0x6ef800	main.test+0xa0	C:/Users/xiehailian/OneDrive/xiehailian/go-base/pkg/pprof/process/process.go:15</div></pre></td></tr></table></figure></p>
+<p>goroutine创建后没有退出目前已经有83个协程了，而且一直在积累，导致协程泄漏</p>
+<h4 id="内存泄漏"><a href="#内存泄漏" class="headerlink" title="内存泄漏"></a>内存泄漏</h4><ul>
+<li>内存溢出：是指程序在申请内存时，没有足够的内存空间供其使用，出现out of memory。</li>
+<li>内存泄漏：是指程序在申请内存后，无法释放已申请的内存空间，一次内存泄露危害可以忽略，但内存泄露堆积后果很严重，无论多少内存，迟早会被占光，占光以后内存就溢出了<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">import (</div><div class="line">	&quot;fmt&quot;</div><div class="line">	&quot;net/http&quot;</div><div class="line">	_ &quot;net/http/pprof&quot;</div><div class="line">	&quot;time&quot;</div><div class="line">)</div><div class="line"></div><div class="line">func memoryLeak() &#123;</div><div class="line">    for &#123;</div><div class="line">        select &#123;</div><div class="line">        case &lt;-time.After(3 * time.Second):</div><div class="line">        default:</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">func main() &#123;</div><div class="line">	go memoryLeak()</div><div class="line">	http.ListenAndServe(&quot;localhost:8080&quot;, nil)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>通过命令行查看heap分配情况<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">$ go tool pprof http://localhost:8080/debug/pprof/heap</div><div class="line"></div><div class="line">(pprof) top</div><div class="line">Showing nodes accounting <span class="keyword">for</span> 1250.09MB, 100% of 1250.59MB total</div><div class="line">Dropped 6 nodes (cum &lt;= 6.25MB)</div><div class="line">      flat  flat%   sum%        cum   cum%</div><div class="line"> 1034.58MB 82.73% 82.73%  1250.09MB   100%  time.NewTimer</div><div class="line">  215.51MB 17.23%   100%   215.51MB 17.23%  time.startTimer</div><div class="line">         0     0%   100%  1250.09MB   100%  main.memoryLeak</div><div class="line">         0     0%   100%  1250.09MB   100%  time.After</div></pre></td></tr></table></figure></p>
+<p>此时内存堆积了3s之内的time对象，会不断的新建和释放对象，浪费内存空间以及CPU性能</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2019-05-16T10:36:23.172Z" itemprop="dateUpdated">2019-05-16 18:36:23</time>
+</span><br>
+
+
+        
+    </div>
+    <footer>
+        <a href="http://printxhl.com">
+            <img src="/img/avatar.jpg" alt="谢海练">
+            谢海练
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Go/">Go</a></li></ul>
+
+
+            
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/11/05/Linux-HexoBlog/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Hexo Blog</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <!-- <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>footer.license</span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>谢海练 &copy; 2017 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer> -->
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: false, REWARD: false };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.6.13"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.6.13" async></script>
+
+
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+
+
+
+
+
+
+
+
+</body>
+</html>
